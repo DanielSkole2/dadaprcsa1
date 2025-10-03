@@ -57,7 +57,7 @@ static struct kd_node* build_kd(struct kd_node *node,
 }
 
 
-static struct kd_data* mk_kdtree(struct record *rs, int n) {
+struct kd_data* mk_kdtree(struct record *rs, int n) {
     struct kd_data *d = malloc(sizeof(*d));
     d->buf = malloc(n * sizeof(*d->buf));
     d->n = n;
@@ -111,9 +111,11 @@ void free_kdtree(struct kd_data* data) {
     free(data);
 }
 
+#ifndef COORD_QUERY_NO_MAIN
 int main(int argc, char** argv) {
     return coord_query_loop(argc, argv,
                             (mk_index_fn)mk_kdtree,
                             (free_index_fn)free_kdtree,
                             (lookup_fn)lookup_kdtree);
 }
+#endif
