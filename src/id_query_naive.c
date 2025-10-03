@@ -38,10 +38,11 @@ if (data->rs[i].osm_id == needle) return &data->rs[i];
 return NULL;
 }
 
-
+#ifndef ID_QUERY_NO_MAIN
 int main(int argc, char** argv) {
 return id_query_loop(argc, argv,
 (mk_index_fn)mk_naive,
 (free_index_fn)free_naive,
 (lookup_fn)lookup_naive);
 }
+#endif
