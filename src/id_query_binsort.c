@@ -62,10 +62,11 @@ else hi = mid - 1;
 return NULL;
 }
 
-
+#ifndef ID_QUERY_NO_MAIN
 int main(int argc, char** argv) {
 return id_query_loop(argc, argv,
 (mk_index_fn)mk_sorted,
 (free_index_fn)free_sorted,
 (lookup_fn)lookup_sorted);
 }
+#endif
