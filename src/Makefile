@@ -1,8 +1,8 @@
 CC=gcc
-CFLAGS=-Wall -Wextra -pedantic -std=gnu99 -g
+CFLAGS=-Wall -Wextra -pedantic -std=gnu99 -g 
 LDFLAGS=-lm
 PROGRAMS=random_ids id_query_naive coord_query_naive id_query_indexed id_query_binsort coord_query_kdtree 
-TESTS=..
+TESTS=Test_files/coord_query_naive_test Test_files/coord_query_kdtree_test Test_files/id_query_binsort_test Test_files/id_query_indexed_test Test_files/id_query_naive_test
 
 .PHONY: all test clean ../src.zip
 
@@ -29,11 +29,25 @@ record.o: record.c
 sort.o: sort.c
 	$(CC) -c $< $(CFLAGS)
 
+coord_query_%_nomains.o: coord_query_%.c
+	$(CC) -c $< $(CFLAGS) -DCOORD_QUERY_NO_MAIN -o $@
+
+id_query_%_nomains.o: id_query_%.c
+	$(CC) -c $< $(CFLAGS) -DID_QUERY_NO_MAIN -o $@
+
+
+Test_files/coord_query_%_test: Test_files/coord_query_%_test.o record.o coord_query.o coord_query_%_nomains.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+Test_files/id_query_%_test: Test_files/id_query_%_test.o record.o id_query.o id_query_%_nomains.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
 test: $(TESTS)
 	@set e; for test in $(TESTS); do echo ./$$test; ./$$test; done
 
 clean:
 	rm -rf core *.o $(PROGRAMS)
+	rm -rf core Test_files/*.o $(TESTS)
 
 planet-latest-geonames.tsv:
 	wget https://github.com/OSMNames/OSMNames/releases/download/v2.0.4/planet-latest_geonames.tsv.gz
